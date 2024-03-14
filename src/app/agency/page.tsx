@@ -1,5 +1,6 @@
 import { verifyAndAcceptInvitation } from '@/actions/invitation';
 import { getAuthUserDetails } from '@/actions/user';
+import AgencyDetails from '@/components/forms/agency-details';
 import { currentUser } from '@clerk/nextjs';
 import { Plan } from '@prisma/client';
 import { redirect } from 'next/navigation';
@@ -38,8 +39,9 @@ async function Page({
 
   return (
     <div className='flex justify-center items-center mt-4'>
-      <div className='max-w-[850px] border p-4 rounded-xl'>
-        <h1 className='text-4xl'>Create an agency</h1>
+      <div className='max-w-[850px] p-4 rounded-xl space-y-6'>
+        <h1 className='text-4xl ml-2'>Create an agency</h1>
+        <AgencyDetails />
       </div>
     </div>
   );
