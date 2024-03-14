@@ -13,11 +13,6 @@ body {
   box-sizing: border-box;
 }
 
-/* 
-R (0)
-G (110)
-B (255 */
-
 @layer base {
   :root {
     --background: 216 100% 98.04%;
@@ -52,11 +47,6 @@ B (255 */
   }
 
   .dark {
-    /* Name: custom color palette
-       Author: Ilias Ism
-       URL: https://gradient.page */
-
-    /* CSS: .bg-gradient { background: var(--gradient) } */
     --gradient: linear-gradient(to top left, #007adf, #00ecbc);
 
     --background: 220 65% 3.52%;
