@@ -1,7 +1,6 @@
 import { verifyAndAcceptInvitation } from '@/actions/invitation';
 import { getAuthUserDetails } from '@/actions/user';
 import AgencyDetails from '@/components/forms/agency-details';
-import { currentUser } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 
 async function Page({
