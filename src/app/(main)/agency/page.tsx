@@ -34,7 +34,6 @@ async function Page({
   }
 
   // Visitor is not a agency user or has an invitation
-  const authUser = await currentUser();
 
   return (
     <div className='flex justify-center items-center mt-4'>
