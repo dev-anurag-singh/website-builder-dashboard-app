@@ -22,14 +22,76 @@ import { Input } from '../ui/input';
 import { Switch } from '../ui/switch';
 import { Button } from '../ui/button';
 import FileUpload from '../file-upload';
+import { upsertAgency } from '@/actions/agency';
+import { Agency } from '@prisma/client';
+import { v4 } from 'uuid';
+import { initUser } from '@/actions/user';
+import { useRouter } from 'next/navigation';
+import { useToast } from '../ui/use-toast';
+import { Loader2 } from 'lucide-react';
 
-function AgencyDetails() {
+function AgencyDetails({ data }: { data?: Partial<Agency> }) {
   const form = useForm<TAgencyValidator>({
+    mode: 'onChange',
     resolver: zodResolver(AgencyValidator),
+    defaultValues: {
+      name: data?.name || '',
+      companyEmail: data?.companyEmail,
+      companyPhone: data?.companyPhone || '',
+      whiteLabel: data?.whiteLabel || false,
+      address: data?.address || '',
+      city: data?.city || '',
+      zipCode: data?.zipCode || '',
+      state: data?.state || '',
+      country: data?.country || '',
+      agencyLogo: data?.agencyLogo || '',
+    },
   });
+  const isLoading = form.formState.isSubmitting;
+  const router = useRouter();
+  const { toast } = useToast();
 
-  function onSubmit(data: TAgencyValidator) {
-    console.log(data);
+  async function onSubmit(values: TAgencyValidator) {
+    try {
+      let custId;
+      const response = await upsertAgency({
+        id: data?.id ? data.id : v4(),
+        customerId: data?.customerId || custId || '',
+        address: values.address,
+        agencyLogo: values.agencyLogo,
+        city: values.city,
+        companyPhone: values.companyPhone,
+        country: values.country,
+        name: values.name,
+        state: values.state,
+        whiteLabel: values.whiteLabel,
+        zipCode: values.zipCode,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        companyEmail: values.companyEmail,
+        connectAccountId: '',
+        goal: 5,
+      });
+      if (data?.id) {
+        return router.refresh();
+      }
+      const userData = await initUser({
+        role: 'AGENCY_OWNER',
+        agencyId: response.id,
+      });
+      if (!userData) throw new Error('Something went wrong');
+
+      toast({ title: 'Agency Created' });
+
+      router.push(`/agency/${response.id}`);
+    } catch (error) {
+      console.error(error);
+      toast({
+        variant: 'destructive',
+        title: 'Oppse!',
+        description: 'could not create your agency',
+      });
+    }
   }
 
   return (
@@ -45,6 +107,7 @@ function AgencyDetails() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
             <FormField
+              disabled={isLoading}
               control={form.control}
               name='agencyLogo'
               render={({ field }) => (
@@ -63,6 +126,7 @@ function AgencyDetails() {
             />
             <div className='flex md:flex-row gap-4'>
               <FormField
+                disabled={isLoading}
                 control={form.control}
                 name='name'
                 render={({ field }) => (
@@ -76,6 +140,7 @@ function AgencyDetails() {
                 )}
               />
               <FormField
+                disabled={isLoading}
                 control={form.control}
                 name='companyEmail'
                 render={({ field }) => (
@@ -91,6 +156,7 @@ function AgencyDetails() {
             </div>
             <div className='flex md:flex-row gap-4'>
               <FormField
+                disabled={isLoading}
                 control={form.control}
                 name='companyPhone'
                 render={({ field }) => (
@@ -105,6 +171,7 @@ function AgencyDetails() {
               />
             </div>
             <FormField
+              disabled={isLoading}
               control={form.control}
               name='whiteLabel'
               render={({ field }) => {
@@ -130,6 +197,7 @@ function AgencyDetails() {
               }}
             />
             <FormField
+              disabled={isLoading}
               control={form.control}
               name='address'
               render={({ field }) => (
@@ -144,6 +212,7 @@ function AgencyDetails() {
             />
             <div className='flex md:flex-row gap-4'>
               <FormField
+                disabled={isLoading}
                 control={form.control}
                 name='city'
                 render={({ field }) => (
@@ -157,6 +226,7 @@ function AgencyDetails() {
                 )}
               />
               <FormField
+                disabled={isLoading}
                 control={form.control}
                 name='state'
                 render={({ field }) => (
@@ -170,6 +240,7 @@ function AgencyDetails() {
                 )}
               />
               <FormField
+                disabled={isLoading}
                 control={form.control}
                 name='zipCode'
                 render={({ field }) => (
@@ -184,6 +255,7 @@ function AgencyDetails() {
               />
             </div>
             <FormField
+              disabled={isLoading}
               control={form.control}
               name='country'
               render={({ field }) => (
@@ -196,8 +268,8 @@ function AgencyDetails() {
                 </FormItem>
               )}
             />
-            <Button type='submit'>
-              {/* {isLoading ? <Loading /> : 'Save Agency Information'} */}
+            <Button disabled={isLoading} type='submit'>
+              {isLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
               Save Agency Information
             </Button>
           </form>
