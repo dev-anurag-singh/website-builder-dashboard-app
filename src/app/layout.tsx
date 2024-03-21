@@ -5,6 +5,7 @@ import { dark } from '@clerk/themes';
 import './globals.css';
 import '@uploadthing/react/styles.css';
 import ThemeProvider from '@/providers/theme-provider';
+import { Toaster } from '@/components/ui/toaster';
 
 const dm_sans = DM_Sans({ subsets: ['latin'] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>
