@@ -54,6 +54,7 @@ export const initUser = async (newUser: Partial<User>) => {
       email: user.emailAddresses[0].emailAddress,
       name: `${user.firstName} ${user.lastName}`,
       role: newUser.role || 'SUBACCOUNT_USER',
+      agencyId: newUser.agencyId || '',
     },
   });
 
