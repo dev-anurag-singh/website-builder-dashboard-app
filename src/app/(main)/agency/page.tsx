@@ -1,6 +1,7 @@
 import { verifyAndAcceptInvitation } from '@/actions/invitation';
 import { getAuthUserDetails } from '@/actions/user';
 import AgencyDetails from '@/components/forms/agency-details';
+import { currentUser } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 
 async function Page({
@@ -33,12 +34,14 @@ async function Page({
   }
 
   // Visitor is not a agency user or has an invitation
-
+  const authUser = await currentUser();
   return (
     <div className='flex justify-center items-center mt-4'>
       <div className='max-w-[850px] p-4 rounded-xl space-y-6'>
         <h1 className='text-4xl ml-2'>Create an agency</h1>
-        <AgencyDetails />
+        <AgencyDetails
+          data={{ companyEmail: authUser?.emailAddresses[0].emailAddress }}
+        />
       </div>
     </div>
   );
