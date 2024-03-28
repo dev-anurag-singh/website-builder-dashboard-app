@@ -20,7 +20,7 @@ async function Sidebar({ id, type }: SidebarProps) {
       ? user.Agency
       : user.Agency.SubAccount.find(sub => sub.id === id);
 
-  if (details) return null;
+  if (!details) return null;
 
   const isWhiteLabeledAgency = user.Agency.whiteLabel;
   let sideBarLogo = user.Agency.agencyLogo || '/assets/plura-logo.svg';
